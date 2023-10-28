@@ -7,18 +7,27 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Contact from "./pages/Contact";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Error404 from "./pages/Error404";
+import AuthContext from "./context/AuthContext";
 function App() {
+  const message = "Hi";
+
   return (
     <>
       <BrowserRouter>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
+        <AuthContext.Provider value={{ message }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<Error404 />} />
+          </Routes>
+        </AuthContext.Provider>
+        <Footer />
       </BrowserRouter>
     </>
   );
