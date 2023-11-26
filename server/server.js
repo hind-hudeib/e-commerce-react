@@ -4,19 +4,23 @@ const port = 5000;
 const userRoutes = require('./routes/userRoute');
 const mongoose = require('mongoose');
 const cors = require('cors'); 
-
+const productRoutes = require('./routes/productsRoute')
 app.use(express.json());
 app.use(cors());
 
-app.use('/user', userRoutes);
-
 mongoose.connect(
-  'mongodb+srv://hindsaed:iVteBPm88dPnilph@cluster0.peafkjd.mongodb.net/',
+  'mongodb+srv://hindsaed:iVteBPm88dPnilph@cluster0.peafkjd.mongodb.net/e-commerce',
   {
+    
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }
 );
+
+
+app.use('/users', userRoutes);
+app.use('/product', productRoutes)
+
 
 const db = mongoose.connection;
 

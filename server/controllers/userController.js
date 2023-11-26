@@ -2,6 +2,27 @@ const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const { createToken } = require('../middleware/tokenMiddleware');
 
+
+// get all users 
+const getAllUsers = async (req, res) => {
+  try {
+      const allUsers = await User.find();
+      res.status(200).json({
+          success: true,
+          message: 'Products retrieved successfully',
+          users: allUsers,
+      });
+  } catch (error) {
+      console.error('Error retrieving products:', error);
+      res.status(500).json({
+          success: false,
+          message: 'Internal server error',
+          error: error.message,
+      });
+  }
+};
+
+
 // signup
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -99,6 +120,7 @@ const getUser = async (req, res) => {
 
 
 module.exports = {
+  getAllUsers,
   registerUser,
   loginUser,
   getUser,

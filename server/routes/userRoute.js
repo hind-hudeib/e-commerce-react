@@ -3,6 +3,9 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
+// get all users
+    router.get('/users', userController.getAllUsers);
+
 // Register a new user
 router.post('/register', userController.registerUser);
 
@@ -10,7 +13,7 @@ router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
 
 
-router.get('/getUser', userController.getUser);
+// router.get('/getUser', userController.getUser);
 
 
 
