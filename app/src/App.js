@@ -9,35 +9,52 @@ import Contact from "./pages/Contact";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Error404 from "./pages/Error404";
-import AuthContext from "./context/AuthContext";
-import PortalComponent from "./components/Home/PortalComponent";
+import { AuthProvider } from "./context/AuthContext";
+import Prodects from "./pages/Prodects";
+import D from "./pages/D";
+import Details from './pages/Details'
 function App() {
-  const message = "Hi";
   const [isPortalOpen, setIsPortalOpen] = useState(false);
 
   const togglePortal = () => {
     setIsPortalOpen(!isPortalOpen);
   };
+
+
   return (
     <>
       <BrowserRouter>
-        <Navbar />
-        <AuthContext.Provider value={{ message }}>
+        <AuthProvider>
+          <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Prodects />} />
+            <Route path="/d/:s" element={<D />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/contact/:id" element={<Details/>} />
             <Route path="*" element={<Error404 />} />
           </Routes>
-        </AuthContext.Provider>
-        <div>
+        </AuthProvider>
+
+
+
+
+
+
+
+
+
+
+
+
+        {/* <div>
           <h1>Normal Content</h1>
           <button onClick={togglePortal}>Toggle Portal</button>
           {isPortalOpen && (
             <PortalComponent>
-              <div className="portal-content">
+              <div className="portal-content z-50 bg-opacity-40 bg-slate-300 flex">
                 <h2>Portal Content</h2>
                 <p>
                   This content is rendered outside the normal component
@@ -46,7 +63,7 @@ function App() {
               </div>
             </PortalComponent>
           )}
-        </div>
+        </div> */}
         <Footer />
 
       </BrowserRouter>

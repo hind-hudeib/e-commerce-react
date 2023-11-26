@@ -1,65 +1,105 @@
-// controllers/userController.js
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const { createToken } = require('../middleware/tokenMiddleware');
 
-
+// signup
 const registerUser = async (req, res) => {
-
   const { username, email, password } = req.body;
 
   try {
-      const user = await User.findOne({ email: email });
-      if (user) {
-          return res.status(401).send("Email already taken");
-      }
-  } catch (error) {
-      errorHandler(error, req, res);
-  }
+    const user = await User.findOne({ email: email });
+    if (user) {
+      return res.status(409).json({ error: 'Email already taken' });
+    }
 
-  const hashedPwd = await bcrypt.hash(password, 10);
 
-  const newUser = new User({
+    const hashedPwd = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
       username: username,
       email: email,
       password: hashedPwd,
-  });
+    });
 
-  const user = await newUser.save();
+    const savedUser = await newUser.save();
 
-  req.body = user;
+    // Create token for the registered user
+    const payload = {
+      userId: savedUser._id,
+      email: savedUser.email,
+      username: savedUser.username,
+    };
+
+    const token = createToken(payload);
+
+    // Send user data and token in the response
+    res.status(201).json({ user: payload, token });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Registration failed' });
+  }
 };
+
+
 // login
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // Find the user by their username
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Verify the provided password against the stored hashed password
-    const passwordMatch = await bcrypt.compare(password, user.password); // Added await here
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Authentication failed' });
     }
 
-    // If the username and password are correct, generate a JSON Web Token (JWT)
-    const token = jwt.sign({ userId: user._id, username: user.username }, 'your_secret_key', {
-      expiresIn: '1h', // You can adjust the token expiration time
+    const payload = {
+      userId: user._id,
+      email: user.email,
+      username: user.username,
+    };
+
+    const token = createToken(payload);
+    // Set the JWT token as an HTTP-only cookie
+    res.cookie('token', token, {
+      httpOnly: true,
     });
 
-    res.status(200).json({ message: 'Authentication successful', token });
+    // Send user data and token in the response
+    res.status(200).json({ user: payload, token });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed' });
   }
 };
 
+
+const getUser = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const user = await User.findOne({ _id: id });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
+
 module.exports = {
   registerUser,
   loginUser,
+  getUser,
 };

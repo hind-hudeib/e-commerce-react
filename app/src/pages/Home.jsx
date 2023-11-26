@@ -9,11 +9,11 @@ const Home = () => {
     <div>
       <Hero />
       <div className="text-center flex flex-col justify-center items-center text-xl">
-        <h1>Normal Content</h1>
+        {/* <h1>Normal Content</h1>
         <Portal>
           <h2>Portal Content</h2>
           <p>This content is conditionally rendered.</p>
-        </Portal>
+        </Portal> */}
       </div>
       <AboutSection />
       <BlogSection />

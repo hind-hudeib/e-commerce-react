@@ -1,11 +1,9 @@
-import React, { useContext } from 'react'
-import AuthContext from '../context/AuthContext';
+import React from 'react'
 
 const About = () => {
-  const { message } = useContext(AuthContext);
 
   return (
-    <div className='m-80 text-5xl'>{message}</div>
+    <div className='m-80 text-5xl'></div>
   )
 }
 

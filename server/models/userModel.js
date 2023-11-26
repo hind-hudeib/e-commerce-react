@@ -5,9 +5,8 @@ const userSchema = new mongoose.Schema({
   username: String,
   email: String,
   password: String,
-  // Add other fields as needed
 });
 
-const User = mongoose.model('User', userSchema);
+const Users = mongoose.model('Users', userSchema);
 
-module.exports = User;
+module.exports = Users;

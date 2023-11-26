@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
-
+import { useAuth } from '../context/AuthContext';
+import Cookies from 'universal-cookie'
 const Login = () => {
+  const { setLoggedIn } = useAuth(); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate()
+
+  const cookies = new Cookies(null, { secure: true, sameSite: 'None' });
 
 
   const handleSubmit = async (e) => {
@@ -14,8 +20,15 @@ const Login = () => {
         email,
         password,
       });
+      const token = response.data.token;
+      
+      // Set the cookie with secure option
+      console.log('Token:', token);
+      cookies.set('token', token, { expires: 7, secure: true, httpOnly: true, SameSite: 'None' });
 
-      console.log('Response:', response.data);
+
+      setLoggedIn(true);
+      navigate('/');
     } catch (error) {
       console.error('Error:', error);
     }
